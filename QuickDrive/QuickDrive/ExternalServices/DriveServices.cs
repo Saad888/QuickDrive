@@ -4,7 +4,7 @@ using System.Text;
 
 namespace QuickDrive.ExternalServices
 {
-    public enum Services
+    public enum DriveServices
     {
         GoogleDrive,
         OneDrive,

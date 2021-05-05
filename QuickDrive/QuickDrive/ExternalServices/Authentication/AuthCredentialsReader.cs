@@ -24,9 +24,9 @@ namespace QuickDrive.ExternalServices.Authentication
             }
         }
 
-        public static AuthCredentialsModel GetCredentials(Services service)
+        public static AuthCredentialsModel GetCredentials(DriveServices service)
         {
-            return Credentials?[Enum.GetName(typeof(Services), service)];
+            return Credentials?[Enum.GetName(typeof(DriveServices), service)];
         }
     }
 }

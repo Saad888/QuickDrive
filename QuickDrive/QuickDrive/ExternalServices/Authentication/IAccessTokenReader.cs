@@ -7,6 +7,6 @@ namespace QuickDrive.ExternalServices.Authentication
 {
     public interface IAccessTokenReader
     {
-        Task<Token> GetAccessToken(AuthCredentialsModel credentials);
+        Task<Token> GetAccessToken(AuthCredentialsModel credentials, DriveServices service);
     }
 }

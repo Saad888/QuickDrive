@@ -19,11 +19,11 @@ namespace QuickDrive.Globals
 
         // -----------------------------------
         // Per service preferences
-        private static string ServiceName(ExternalServices.Services service) => Enum.GetName(typeof(ExternalServices.Services), service);
+        private static string ServiceName(ExternalServices.DriveServices service) => Enum.GetName(typeof(ExternalServices.DriveServices), service);
 
         // Refresh Token (Per Service)
-        private static string RefreshTokenKey(ExternalServices.Services service) => ServiceName(service) + "RefreshToken";
-        public  static string GetRefreshToken(ExternalServices.Services service) => Preferences.Get(RefreshTokenKey(service), null);
-        public  static void   SetRefreshToken(ExternalServices.Services service, string value) => Preferences.Set(RefreshTokenKey(service), value);
+        private static string RefreshTokenKey(ExternalServices.DriveServices service) => ServiceName(service) + "RefreshToken";
+        public  static string GetRefreshToken(ExternalServices.DriveServices service) => Preferences.Get(RefreshTokenKey(service), null);
+        public  static void   SetRefreshToken(ExternalServices.DriveServices service, string value) => Preferences.Set(RefreshTokenKey(service), value);
     }
 }

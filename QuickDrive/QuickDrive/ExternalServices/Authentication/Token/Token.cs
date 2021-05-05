@@ -14,7 +14,7 @@ namespace QuickDrive.ExternalServices.Authentication
         private int ExpireTime { get; set; } = 50;
         private DateTime ExpiresAt { get; set; }
 
-        public Token(Dictionary<string, string> properties, Services service)
+        public Token(Dictionary<string, string> properties, DriveServices service)
         {
             AccessToken = properties["access_token"];
             RefreshToken = properties["refresh_token"];
@@ -41,7 +41,7 @@ namespace QuickDrive.ExternalServices.Authentication
             if (DateTime.Now > ExpiresAt) return null;
             return AccessToken;
         }
-        public static string GetStoredRefreshToken(Services service)
+        public static string GetStoredRefreshToken(DriveServices service)
         {
             return GlobalPreferences.GetRefreshToken(service);
         }

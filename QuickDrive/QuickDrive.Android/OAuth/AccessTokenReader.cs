@@ -7,9 +7,10 @@ using Xamarin.Forms;
 
 using Plugin.CurrentActivity;
 
-using QuickDrive.ExternalServices.Authentication;
 using QuickDrive.Globals;
-
+using QuickDrive.Exceptions;
+using QuickDrive.ExternalServices;
+using QuickDrive.ExternalServices.Authentication;
 
 [assembly: Dependency(typeof(QuickDrive.Droid.OAuth.AccessTokenReader))]
 namespace QuickDrive.Droid.OAuth
@@ -17,10 +18,14 @@ namespace QuickDrive.Droid.OAuth
     public class AccessTokenReader : IAccessTokenReader
     {
         private static Token Token { get; set; }
+        private static DriveServices CurrentService { get; set; }
         public static OAuth2Authenticator Auth;
 
-        public async Task<Token> GetAccessToken(AuthCredentialsModel credentials)
+        public async Task<Token> GetAccessToken(AuthCredentialsModel credentials, DriveServices currentService)
         {
+            CurrentService = currentService;
+            Token = null;
+
             Auth = new OAuth2Authenticator(
                 credentials.ClientId,
                 credentials.ClientSecret,
@@ -42,6 +47,11 @@ namespace QuickDrive.Droid.OAuth
                 await Task.Delay(500);
             }
 
+            if (!Auth.IsAuthenticated() || Token == null)
+            {
+                throw new OAuthRefusedException();
+            }
+
             return Token;
         }
 
@@ -49,7 +59,7 @@ namespace QuickDrive.Droid.OAuth
         {
             if (e.IsAuthenticated)
             {
-                Token = new Token(e.Account.Properties);
+                Token = new Token(e.Account.Properties, CurrentService);
             }
         }
     }
