@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using QuickDrive.Globals;
 using QuickDrive.Exceptions;
 using QuickDrive.ExternalServices.Authentication;
-using QuickDrive.ExternalServices.ServiceClients.RequestModels;
+using QuickDrive.ExternalServices.ServiceClients.Models;
 
 using Xamarin.Forms;
 
@@ -66,8 +66,8 @@ namespace QuickDrive.ExternalServices.ServiceClients
 
             try
             {
-                var output = await ApiClient.QueryService<GoogleRefreshTokenOutput>(credentials.RefreshUrl, reqObj);
-                Token = new Token(output.AccessToken, refreshToken, output.TokenType);
+                var output = await ApiClient.QueryService<RefreshTokenOutput>(credentials.RefreshUrl, HttpMethod.Post, null, reqObj);
+                Token = new Token(output, refreshToken);
             }
             catch (HttpResponseFailedException e)
             {

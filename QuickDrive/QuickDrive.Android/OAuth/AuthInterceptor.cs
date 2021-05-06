@@ -12,11 +12,11 @@ namespace QuickDrive.Droid.OAuth
                   Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
                   DataSchemes = new[]
                   {
-                    "com.teraflaredevelopment.quickdrive"
+                    "oauth2redirect"
                   },
                   DataPaths = new[]
                   {
-                   "/oauth2redirect"
+                    "//com.teraflaredevelopment.quickdrive"
                   })]
     public class AuthInterceptor : Activity
     {
@@ -38,3 +38,4 @@ namespace QuickDrive.Droid.OAuth
         }
     }
 }
+// CHECK THIS FOR MICROSOFT AUTHENTICATION: https://github.com/AzureAD/microsoft-authentication-library-for-dotnet

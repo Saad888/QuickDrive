@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace QuickDrive.ExternalServices.ServiceClients.RequestModels
+namespace QuickDrive.ExternalServices.ServiceClients.Models
 {
-    public class GoogleRefreshTokenOutput
+    public class RefreshTokenOutput
     {
         [JsonProperty("access_token")]
         public string AccessToken { get; set; }

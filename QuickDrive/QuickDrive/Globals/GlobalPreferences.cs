@@ -13,7 +13,7 @@ namespace QuickDrive.Globals
         /// </summary>
         public static bool Setting_SaveRefreshToken
         {
-            get { return Preferences.Get("Setting_SaveRefreshToken", false); }
+            get { return Preferences.Get("Setting_SaveRefreshToken", true); }
             set { Preferences.Set("Setting_SaveRefreshToken", value); }
         }
 

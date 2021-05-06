@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using Xamarin.Auth;
 using Xamarin.Forms;
@@ -19,6 +18,7 @@ namespace QuickDrive.Droid.OAuth
     {
         private static Token Token { get; set; }
         private static DriveServices CurrentService { get; set; }
+        private static bool AuthEventActive { get; set; }
         public static OAuth2Authenticator Auth;
 
         public async Task<Token> GetAccessToken(AuthCredentialsModel credentials, DriveServices currentService)
@@ -36,18 +36,20 @@ namespace QuickDrive.Droid.OAuth
                 isUsingNativeUI: true
             );
             Auth.Completed += OnAuthenticationCompleted;
+            Auth.Error += OnAuthenticationError;
+            AuthEventActive = true;
 
             CustomTabsConfiguration.CustomTabsClosingMessage = null;
 
             var intent = Auth.GetUI(CrossCurrentActivity.Current.AppContext);
             CrossCurrentActivity.Current.Activity.StartActivity(intent);
 
-            while (!Auth.HasCompleted)
+            while (AuthEventActive)
             {
                 await Task.Delay(500);
             }
 
-            if (!Auth.IsAuthenticated() || Token == null)
+            if (Token == null)
             {
                 throw new OAuthRefusedException();
             }
@@ -61,6 +63,12 @@ namespace QuickDrive.Droid.OAuth
             {
                 Token = new Token(e.Account.Properties, CurrentService);
             }
+            AuthEventActive = false;
+        }
+
+        private void OnAuthenticationError(object sender, AuthenticatorErrorEventArgs e)
+        {
+            AuthEventActive = false;
         }
     }
 }

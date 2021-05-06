@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using QuickDrive.Globals;
+using QuickDrive.ExternalServices.ServiceClients.Models;
 
 namespace QuickDrive.ExternalServices.Authentication
 {
@@ -10,29 +11,27 @@ namespace QuickDrive.ExternalServices.Authentication
     {
         private string AccessToken { get; set; }
         private string RefreshToken { get; set; }
-        private string TokenType { get; set; }
-        private int ExpireTime { get; set; } = 50;
+        private int ExpireTimeShift { get; set; } = 60;
         private DateTime ExpiresAt { get; set; }
 
         public Token(Dictionary<string, string> properties, DriveServices service)
         {
-            AccessToken = properties["access_token"];
+            AccessToken = properties["token_type"] + " " + properties["access_token"];
             RefreshToken = properties["refresh_token"];
-            TokenType = properties["token_type"];
+            var expireTime = Int32.Parse(properties["expires_in"]);
 
-            ExpiresAt = DateTime.Now.AddMinutes(ExpireTime);
+            ExpiresAt = DateTime.Now.AddMinutes(expireTime - ExpireTimeShift);
             if (GlobalPreferences.Setting_SaveRefreshToken)
             {
                 GlobalPreferences.SetRefreshToken(service, RefreshToken);
             }
         }
 
-        public Token(string token, string refreshToken, string tokenType)
+        public Token(RefreshTokenOutput output, string refreshToken)
         {
-            AccessToken = token;
+            AccessToken = output.TokenType + " " + output.AccessToken;
             RefreshToken = refreshToken;
-            TokenType = tokenType;
-            ExpiresAt = DateTime.Now.AddMinutes(ExpireTime);
+            ExpiresAt = DateTime.Now.AddSeconds(output.ExpiresIn - ExpireTimeShift);
         }
 
         public string GetAccessToken()
@@ -43,11 +42,9 @@ namespace QuickDrive.ExternalServices.Authentication
         }
         public static string GetStoredRefreshToken(DriveServices service)
         {
-            return GlobalPreferences.GetRefreshToken(service);
+            return GlobalPreferences.Setting_SaveRefreshToken ? GlobalPreferences.GetRefreshToken(service) : null;
         }
 
         public string GetRefreshToken() => RefreshToken;
-
-        public string GetTokenType() => TokenType;
     }
 }

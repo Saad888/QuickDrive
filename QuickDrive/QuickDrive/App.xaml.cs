@@ -14,7 +14,7 @@ namespace QuickDrive
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
-            MainPage = new AppShell();
+            MainPage = new TestPage();
         }
 
         protected override void OnStart()

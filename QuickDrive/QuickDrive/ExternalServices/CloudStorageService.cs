@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using QuickDrive.ExternalServices.ServiceClients;
+using QuickDrive.ExternalServices.ServiceClients.Models;
 
 namespace QuickDrive.ExternalServices
 {
@@ -17,7 +18,8 @@ namespace QuickDrive.ExternalServices
         static CloudStorageService()
         {
             Clients = new Dictionary<DriveServices, ServiceClientBase>();
-            //Clients.Add(DriveServices.GoogleDrive, )
+            Clients.Add(DriveServices.GoogleDrive, new GoogleClient());
+            Clients.Add(DriveServices.OneDrive, new MicrosoftClient());
         }
         #endregion
 
@@ -33,10 +35,11 @@ namespace QuickDrive.ExternalServices
             return services;
         }
 
+        public async static Task<bool> IsAuthenticated(DriveServices service) => await Clients[service].IsAuthenticated();
         public async static Task AuthenticateService(DriveServices service) => await Clients[service].Authenticate();
-        public async static Task RemoveAuthentication(DriveServices service) => await Clients[service].RemoveAuthentication();
-        public async static Task UploadFiles(DriveServices service, List<Byte[]> files) => await Clients[service].UploadFiles(files);
-        public async static Task GetFolders(DriveServices service, string parent) => await Clients[service].GetFolders(parent);
+        public static void RemoveAuthentication(DriveServices service) => Clients[service].RemoveAuthentication();
+        public async static Task UploadFiles(DriveServices service, List<UploadFile> files, string parentFolderId) => await Clients[service].UploadFiles(files, parentFolderId);
+        public async static Task<Folder> GetFolders(DriveServices service, string parent) => await Clients[service].GetFolders(parent);
         public async static Task CreateFolder(DriveServices service, string folderName, string parent) => await Clients[service].CreateFolder(folderName, parent);
         #endregion
 
